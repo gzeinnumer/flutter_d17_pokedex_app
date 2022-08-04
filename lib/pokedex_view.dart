@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_d17_pokedex_app/bloc/nav_cubit.dart';
 
 import 'bloc/pokemon_bloc.dart';
 import 'bloc/pokemon_state.dart';
@@ -21,27 +22,31 @@ class PokedexView extends StatelessWidget {
           );
         } else if (state is PokemonPageLoadSuccess) {
           return GridView.builder(
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
             itemCount: state.pokemonListing.length,
             itemBuilder: (context, index) {
-              return Card(
-                child: GridTile(
-                  child: Column(
-                    children: [
-                      Image.network(state.pokemonListing[index].imageUrl),
-                      Text(state.pokemonListing[index].name)
-                    ],
+              return GestureDetector(
+                onTap: () => BlocProvider.of<NavCubit>(context).showPokemonDetails(state.pokemonListing[index].id),
+                child: Card(
+                  child: GridTile(
+                    child: Column(
+                      children: [
+                        Image.network(state.pokemonListing[index].imageUrl),
+                        Text(state.pokemonListing[index].name)
+                      ],
+                    ),
                   ),
                 ),
               );
             },
           );
-        } else if(state is PokemonPageLoadFailed){
+        } else if (state is PokemonPageLoadFailed) {
           return Center(
             child: Text(state.error.toString()),
           );
-        } else{
+        } else {
           return Container();
         }
       }),
